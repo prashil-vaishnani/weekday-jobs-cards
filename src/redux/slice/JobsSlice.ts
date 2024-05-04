@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { IJobsInitialState, Job } from "../../types/jobs";
+import { IJobsInitialState, Job, filterType } from "../../types/jobs";
 
 const initialState: IJobsInitialState = {
   jobsList: [],
   loading: false,
   errors: "",
   totalCount: 0,
+  filter: {} as filterType,
 };
 
 export const jobsSlice = createSlice({
@@ -27,6 +28,9 @@ export const jobsSlice = createSlice({
     setTotalJobsCount(state, action: PayloadAction<number>) {
       state.totalCount = action.payload;
     },
+    setFilterValues(state, action) {
+      state.filter = action.payload;
+    },
   },
 });
 
@@ -35,6 +39,7 @@ export const {
   getJobsListLoading,
   getJobsListSuccess,
   setTotalJobsCount,
+  setFilterValues
 } = jobsSlice.actions;
 
 export default jobsSlice.reducer;

@@ -25,4 +25,14 @@ export interface IJobsInitialState {
   totalCount: number;
   loading: boolean;
   errors: string | string[];
+  filter: filterType;
+}
+export interface filterType {
+  minExperience: string;
+  companyName: string;
+  location: string;
+  remoteOnsite: string;
+  techStack: string;
+  role: string;
+  minBasePay: string;
 }

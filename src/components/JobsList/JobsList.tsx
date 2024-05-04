@@ -1,23 +1,30 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import JobCard from "../JobsCard/JobsCard";
 import { requestOptions } from "../../services/Jobs.services";
-import { Job } from "../../types/jobs";
-import TopFillter from "../TopFillter/TopFillter";
-import { dispatch } from "../../redux/store";
+import TopFilter from "../TopFilter/TopFilter";
+import { dispatch, useSelector } from "../../redux/store";
 import {
   getJobsListLoading,
   getJobsListSuccess,
   setTotalJobsCount,
 } from "../../redux/slice/JobsSlice";
 import "./JobsList.css";
+import { filterJobsHelper } from "../../utils/helper";
+import { Job } from "../../types/jobs";
 
 const JobsList = () => {
-  const [jobsList, setJobsList] = useState<Job[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [noJobs, setNoJobs] = useState<boolean>(false);
   const jobsContainerRef = useRef<HTMLDivElement>(null);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const { jobsList, filter } = useSelector((state) => state.Jobs);
+  const [filterJobsList, setFilterJobsList] = useState<Job[]>([]);
+
+  useEffect(() => {
+    const filterJobs = filterJobsHelper(jobsList, filter);
+    setFilterJobsList(filterJobs);
+  }, [jobsList, filter]);
 
   const fetchJobsList = useCallback(() => {
     const body = JSON.stringify({
@@ -30,7 +37,6 @@ const JobsList = () => {
     })
       .then((response) => response.json())
       .then((result) => {
-        setJobsList((prevJobs) => [...prevJobs, ...result.jdList]);
         setTotalCount(result.totalCount);
         dispatch(getJobsListSuccess(result.jdList));
         dispatch(setTotalJobsCount(result.totalCount));
@@ -83,11 +89,16 @@ const JobsList = () => {
 
   return (
     <>
-      <TopFillter />
+      <TopFilter />
       <div ref={jobsContainerRef} className="jobs-container">
-        {jobsList?.map((job) => {
+        {filterJobsList?.map((job) => {
           return <JobCard job={job} key={job.jdUid} />;
         })}
+        {filterJobsList.length === 0 ? (
+          <h2>
+            No Job Found for given filter. please try selecting differant filter
+          </h2>
+        ) : null}
         {isLoadingMore && <p>Loading More Jobs...</p>}
         {noJobs && <p>no more jobs available</p>}
       </div>

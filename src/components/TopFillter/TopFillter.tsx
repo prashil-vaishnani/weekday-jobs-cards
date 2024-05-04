@@ -1,11 +1,5 @@
-import Select from "@mui/material/Select";
-
 const TopFillter = () => {
-  return (
-    <div>
-      <Select />
-    </div>
-  );
+  return <div>filter</div>;
 };
 
 export default TopFillter;

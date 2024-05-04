@@ -21,7 +21,7 @@ const JobsList = () => {
 
   const fetchJobsList = useCallback(() => {
     const body = JSON.stringify({
-      limit: 10,
+      limit: 12,
       offset: (currentPage - 1) * 10,
     });
     fetch("https://api.weekday.technology/adhoc/getSampleJdJSON", {
